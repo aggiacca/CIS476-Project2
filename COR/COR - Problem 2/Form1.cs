@@ -38,8 +38,9 @@ namespace COR2
 
             RoundDecorator rounded = new RoundDecorator(baseVal);
             ExpDecorator expVal = new ExpDecorator(rounded);
+            TypeDecorator typeVal = new TypeDecorator(output.Type, expVal);
 
-            String value = expVal.getValue();
+            String value = typeVal.getValue();
 
             this.OutputBox.Text = value;
 

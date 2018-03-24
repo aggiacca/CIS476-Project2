@@ -37,9 +37,6 @@ namespace COR2
         {
             return val.Val.ToString();
         }
-
-
-
     }
 
     public abstract class ValueDecorator : IConversion
@@ -53,7 +50,6 @@ namespace COR2
 
         public virtual String getValue()
         {
-            //need this since it must implement ICoffee
             return decoratedConversion.getValue();
         }
 
@@ -84,7 +80,24 @@ namespace COR2
 
         public override String getValue()
         {
-            return System.Convert.ToDouble(base.getValue()).ToString("E2");
+            return System.Convert.ToDouble(base.getValue()).ToString("e2");
+        }
+
+    }
+
+    public class TypeDecorator : ValueDecorator
+    {
+        String type;
+
+        public TypeDecorator(String typ, IConversion c)
+            : base(c)
+        {
+            type = typ;
+        }
+
+        public override String getValue()
+        {
+            return base.getValue() + " " + type + "s" ;
         }
 
     }
