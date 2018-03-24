@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace COR
+namespace COR2
 {
     public partial class Form1 : Form
     {
@@ -33,8 +33,15 @@ namespace COR
             String target = this.TargetUnitBox.Text;
             int inputNum = Int32.Parse(this.InputUnit.Text);
 
-            Double output = mileHandler.Handle(target, inputNum);
-            this.OutputBox.Text = output.ToString();
+            Value output = mileHandler.Handle(target, inputNum);
+            BaseValue baseVal = new BaseValue(output);
+
+            RoundDecorator rounded = new RoundDecorator(baseVal);
+            ExpDecorator expVal = new ExpDecorator(rounded);
+
+            String value = expVal.getValue();
+
+            this.OutputBox.Text = value;
 
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace COR
+﻿namespace COR2
 {
     partial class Form1
     {

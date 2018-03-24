@@ -4,9 +4,90 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COR
+namespace COR2
 {
-    
+
+    public class Value
+    {
+        public double Val { get; set; }
+        public String Type { get; set; }
+
+        public Value(double va, String ty)
+        {
+            Val = va;
+            Type = ty;
+        }
+    }
+
+    public interface IConversion
+    {
+        String getValue();
+    }
+
+    public class BaseValue : IConversion
+    {
+        protected Value val;
+
+        public BaseValue(Value va)
+        {
+            val = va;
+        }
+
+        public String getValue()
+        {
+            return val.Val.ToString();
+        }
+
+
+
+    }
+
+    public abstract class ValueDecorator : IConversion
+    {
+        protected IConversion decoratedConversion;
+
+        public ValueDecorator(IConversion c)
+        {
+            this.decoratedConversion = c;
+        }
+
+        public virtual String getValue()
+        {
+            //need this since it must implement ICoffee
+            return decoratedConversion.getValue();
+        }
+
+    }
+
+    public class RoundDecorator : ValueDecorator
+    {
+        public RoundDecorator(IConversion c)
+            : base(c)
+        {
+
+        }
+
+        public override String getValue()
+        {
+            return Math.Round(System.Convert.ToDouble(base.getValue()), 2).ToString();
+        }
+
+    }
+
+    public class ExpDecorator : ValueDecorator
+    {
+        public ExpDecorator(IConversion c)
+            : base(c)
+        {
+
+        }
+
+        public override String getValue()
+        {
+            return System.Convert.ToDouble(base.getValue()).ToString("E2");
+        }
+
+    }
     
     public abstract class ConvertHandler
     {
@@ -24,7 +105,7 @@ namespace COR
             return nextHandler;
         }
 
-        public double Handle(String target, int inputNum)
+        public Value Handle(String target, int inputNum)
         {
 
             if (handleType.Equals(target))
@@ -40,30 +121,30 @@ namespace COR
             }
             else
             {
-                // none hit so 0.0 or error
-                return 0.0;
+                // none hit so null or error
+                return null;
             }
         }
 
-        abstract protected double Convert(int inputNum);
+        abstract protected Value Convert(int inputNum);
     }
 
     public class MILE_Handler : ConvertHandler
     {
         public MILE_Handler(String type) : base(type) { }
 
-        protected override double Convert(int inputNum)
+        protected override Value Convert(int inputNum)
         {
-            return inputNum * 0.621371;
+            return new Value(inputNum * 0.621371, "Mile");
         }
     }
     public class YARD_Handler : ConvertHandler
     {
         public YARD_Handler(String type) : base(type) { }
 
-        protected override double Convert(int inputNum)
+        protected override Value Convert(int inputNum)
         {
-            return inputNum * 1093.61;
+            return new Value(inputNum * 1093.61, "Yard");
         }
     
     }
@@ -71,9 +152,9 @@ namespace COR
     { 
         public FOOT_Handler(String type) : base(type) { }
 
-        protected override double Convert(int inputNum)
+        protected override Value Convert(int inputNum)
         {
-            return inputNum * 3280.84;
+            return new Value(inputNum * 3280.84, "Foot");
         }
     
     }
